@@ -1,7 +1,8 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 const sub = document.querySelector('#sub');
 const unsub = document.querySelector('#unsub');
+const addBtn = document.querySelector('#add');
 const output = document.querySelector('#output');
 
 let counter = 0;
@@ -18,7 +19,6 @@ sub.addEventListener("click", () => {
 
     subscriber = observable.subscribe(() => {
       addItem();
-      counter++;
     });
   }
 });
@@ -34,7 +34,23 @@ unsub.addEventListener("click", () => {
 function addItem() {
   const li = document.createElement('li');
   const node = document.createTextNode(`Item №${counter}`);
-  
+
   li.appendChild(node);
   output.appendChild(li);
+
+  counter++;
 }
+
+const subject = new Subject();
+
+subject.subscribe(
+  () => addItem(),
+  (error) => console.error(error),
+  () => {
+    alert('Completed!');
+  },
+)
+
+addBtn.addEventListener('click', () => {
+  subject.next();
+})
